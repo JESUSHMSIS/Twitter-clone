@@ -7,7 +7,7 @@ const SidebarLogo = () => {
   return (
     <div
       onClick={() => router.push("/dashboard")}
-      className="rounded-full h-14 w-14 p-4 flex items-center justify-center hover:bg-blue-300 hover:bg-opacity-10 cursor-pointer transition"
+      className="rounded-full h-14 w-14 p-4 flex items-center justify-center hover:bg-blue-300/95 cursor-pointer transition"
     >
       <BsTwitter />
     </div>
