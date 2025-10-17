@@ -1,36 +1,50 @@
 "use client";
-
-import useLoginModal from "@/hooks/useLoginModal";
 import { useState, useCallback } from "react";
 import Input from "../ui/Input";
 import Modal from "../ui/Modal";
 import useRegisterModal from "@/hooks/useRegisterModal";
-const LoginModal = () => {
-  const loginModal = useLoginModal();
+import useLoginModal from "@/hooks/useLoginModal";
+const RegisterModal = () => {
   const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setLoading] = useState(false);
+
   const onToggle = useCallback(() => {
     if (isLoading) {
       return;
     }
-    registerModal.onOpen();
-    loginModal.onClose();
-  }, [registerModal, loginModal, isLoading]);
+    registerModal.onClose();
+    loginModal.onOpen();
+  }, [isLoading, registerModal, loginModal]);
   const onSubmit = useCallback(async () => {
     try {
       setLoading(true);
       //añadir la funcionalidad de login
-      loginModal.onClose();
+      registerModal.onClose();
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
-  }, [loginModal]);
+  }, [registerModal]);
   const BodyContent = (
     <div className="flex flex-col gap-4">
+      <Input
+        placeholder="Nombre Completo"
+        onChange={(e) => setName(e.target.value)}
+        value={name}
+        disabled={isLoading}
+      />
+      <Input
+        placeholder="Nombre de usuario"
+        onChange={(e) => setUserName(e.target.value)}
+        value={userName}
+        disabled={isLoading}
+      />
       <Input
         placeholder="Correo Electronico"
         onChange={(e) => setEmail(e.target.value)}
@@ -49,12 +63,12 @@ const LoginModal = () => {
   const footerContent = (
     <div className="text-neutral-400 text-center mt-4">
       <p>
-        No tienes una cuenta?{" "}
+        Ya tienes una cuenta?{" "}
         <span
           className="text-white cursor-pointer hover:underline"
           onClick={onToggle}
         >
-          Registrate
+          Iniciar sesion
         </span>
       </p>
     </div>
@@ -62,10 +76,10 @@ const LoginModal = () => {
   return (
     <Modal
       disabled={isLoading}
-      isOpen={loginModal.isOpen}
-      title="Iniciar sesion"
-      actionLabel="Iniciar Sesion"
-      onClose={loginModal.onClose}
+      isOpen={registerModal.isOpen}
+      title="Crear una cuenta"
+      actionLabel="Registrarse"
+      onClose={registerModal.onClose}
       onSubmit={onSubmit}
       body={BodyContent}
       footer={footerContent}
@@ -73,4 +87,4 @@ const LoginModal = () => {
   );
 };
 
-export default LoginModal;
+export default RegisterModal;
