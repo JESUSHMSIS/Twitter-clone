@@ -1,13 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcrypt";
 import { prisma } from "@/libs/prismadb";
-type ResponseData = {
-  message: string;
-};
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>,
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     return res.status(405).end();
