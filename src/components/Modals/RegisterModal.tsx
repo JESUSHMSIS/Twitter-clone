@@ -8,7 +8,9 @@ import useRegisterModal from "@/hooks/useRegisterModal";
 import useLoginModal from "@/hooks/useLoginModal";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 const RegisterModal = () => {
+  const router = useRouter();
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
   const [email, setEmail] = useState("");
@@ -27,19 +29,28 @@ const RegisterModal = () => {
   const onSubmit = useCallback(async () => {
     try {
       setLoading(true);
-      await axios.post("/api/register", {
+      const res = await axios.post("/api/register", {
         email,
         name,
         username,
         password,
       });
-      toast.success("Registro exitoso");
-      signIn("Credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-      registerModal.onClose();
+      //toast.success("Registro exitoso");
+      if (res.status === 200) {
+        const ok = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (ok?.ok) {
+          toast.success("Registro exitoso, Bienvenido!!");
+          registerModal.onClose();
+          router.push("/dashboard");
+        } else {
+          toast.error("Hubo un error al iniciar sesion");
+        }
+      }
     } catch (error) {
       console.log(error);
       toast.error("hubo un error");
@@ -68,6 +79,7 @@ const RegisterModal = () => {
         disabled={isLoading}
       />
       <Input
+        type="password"
         placeholder="Contraseña"
         onChange={(e) => setPassword(e.target.value)}
         value={password}

@@ -1,19 +1,18 @@
-import { auth } from "@/auth";
-import { prisma } from "@/libs/prismadb";
+import { prisma } from "./prismadb";
+import { auth } from "./auth";
 
 export const serverAuth = async () => {
   const session = await auth();
-
   if (!session?.user?.email) {
-    throw new Error("Not authenticated");
+    throw new Error("no estas autenticado");
   }
-
   const currentUser = await prisma.user.findUnique({
-    where: { email: session.user.email },
+    where: {
+      email: session?.user?.email,
+    },
   });
-
   if (!currentUser) {
-    throw new Error("User not found");
+    throw new Error("no estas autenticado");
   }
 
   return { currentUser };
