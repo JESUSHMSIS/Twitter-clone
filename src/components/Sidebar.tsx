@@ -1,11 +1,16 @@
+"use client";
+
 import { BiLogOut } from "react-icons/bi";
 import { BsBellFill, BsHouseFill } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
 import SidebarItem from "./SidebarItem";
 import SidebarLogo from "./SidebarLogo";
 import SidebarTweetButton from "./SidebarTweetButton";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 const Sidebar = () => {
+  const { data: currentUser } = useCurrentUser();
+
   const items = [
     {
       label: "Inicio",
@@ -36,11 +41,14 @@ const Sidebar = () => {
               href={item.href}
             />
           ))}
-          <SidebarItem
-            icon={BiLogOut}
-            label="Cerrar sesion"
-            onClick={() => {}}
-          />
+          {currentUser && (
+            <SidebarItem
+              icon={BiLogOut}
+              label="Cerrar sesion"
+              onClick={() => {}}
+            />
+          )}
+
           <SidebarTweetButton />
         </div>
       </div>
