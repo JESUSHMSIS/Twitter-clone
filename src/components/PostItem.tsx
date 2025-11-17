@@ -6,7 +6,8 @@ import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import Avatar from "./ui/Avatar";
-import { AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
+import { AiOutlineHeart, AiFillHeart, AiOutlineMessage } from "react-icons/ai";
+import useLike from "@/hooks/useLikes";
 
 type Props = {
   data: Record<string, any>;
@@ -17,23 +18,30 @@ const PostItem = ({ data, userId }: Props) => {
   const router = useRouter();
   const loginModal = useLoginModal();
   const { data: currentUser } = useCurrentUser();
+
+  const { hasLiked, toggleLike } = useLike(data.id, userId);
+
   const goToUser = useCallback(
     (event: any) => {
       event.stopPropagation();
-      router.push(`/dashboard/${data?.user.id}`);
+      router.push(`/dashboard/${data?.user.id}`); // ✅ Corregir sintaxis
     },
     [router, data?.user?.id],
   );
+
   const goToPost = useCallback(() => {
-    router.push(`/posts/${data.id}`);
-  }, [data?.id]);
+    router.push(`/dashboard/posts/${data.id}`); // ✅ Corregir sintaxis
+  }, [router, data?.id]); // ✅ Agregar router a dependencies
 
   const onLike = useCallback(
     (event: any) => {
       event.stopPropagation();
-      loginModal.onOpen();
+      if (!currentUser) {
+        return loginModal.onOpen();
+      }
+      toggleLike();
     },
-    [loginModal],
+    [loginModal, currentUser, toggleLike],
   );
 
   const createdAt = useMemo(() => {
@@ -42,12 +50,15 @@ const PostItem = ({ data, userId }: Props) => {
     }
     return formatDistanceToNowStrict(new Date(data.createdAt));
   }, [data?.createdAt]);
+
+  const LikeIcon = hasLiked ? AiFillHeart : AiOutlineHeart;
+
   return (
     <div
       onClick={goToPost}
       className="border-b-[1px] border-neutral-800 p-5 cursor-pointer hover:bg-neutral-900 transition"
     >
-      <div className="flex items-start  gap-3">
+      <div className="flex items-start gap-3">
         <Avatar userId={data?.user?.id} />
         <div>
           <div className="flex items-center gap-2">
@@ -61,7 +72,7 @@ const PostItem = ({ data, userId }: Props) => {
               onClick={goToUser}
               className="text-neutral-500 cursor-pointer hover:underline hidden md:block"
             >
-              @{data.user.username}
+              @{data?.user?.username}
             </span>
             <span className="text-neutral-500 text-sm">{createdAt}</span>
           </div>
@@ -75,8 +86,8 @@ const PostItem = ({ data, userId }: Props) => {
               onClick={onLike}
               className="flex items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-red-500"
             >
-              <AiOutlineHeart size={20} />
-              <p>{data.comments?.length || 0}</p>
+              <LikeIcon size={20} color={hasLiked ? "red" : ""} />
+              <p>{data.LikesIds?.length || 0}</p>
             </div>
           </div>
         </div>
@@ -85,4 +96,4 @@ const PostItem = ({ data, userId }: Props) => {
   );
 };
 
-export default PostItem;
+export default PostItem; // ✅ Agregar export

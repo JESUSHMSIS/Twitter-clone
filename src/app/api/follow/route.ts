@@ -51,7 +51,6 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Quitar follow
     const updatedFollowingIds = (currentUser.followingId || []).filter(
       (followingId) => followingId !== userId,
     );
