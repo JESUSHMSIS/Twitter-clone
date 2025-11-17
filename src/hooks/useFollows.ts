@@ -17,8 +17,7 @@ const useFollow = (userId: string) => {
   const isFollowing = useMemo(() => {
     const list = currentUser?.followingId || [];
     return list.includes(userId);
-  }, [userId, currentUser?.followignId]);
-
+  }, [userId, currentUser?.followingId]);
   const toggleFollow = useCallback(async () => {
     if (!currentUser) {
       return loginModal.onOpen();
@@ -38,6 +37,7 @@ const useFollow = (userId: string) => {
       toast.success("Correcto");
     } catch (e) {
       toast.error("ocurrio un error inesperado");
+      console.log("hubo un error", e);
     }
   }, [
     currentUser,

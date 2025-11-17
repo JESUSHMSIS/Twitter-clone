@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     const { userId } = await req.json();
     const { currentUser } = await serverAuth();
-    if (!userId || typeof userId === "string") {
+    if (!userId || typeof userId !== "string") {
       throw new Error("Id invalido");
     }
     const user = await prisma.user.findUnique({
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     if (!user) {
       throw new Error("Id invalido");
     }
-    const updatedFollowingIds = [...(user.followingId || [])];
+    const updatedFollowingIds = [...(user.followingId || []), userId];
 
     const updateUser = await prisma.user.update({
       where: {
@@ -38,7 +38,7 @@ export async function DELETE(req: NextRequest) {
   try {
     const { userId } = await req.json();
     const { currentUser } = await serverAuth();
-
+    console.log(userId);
     if (!userId || typeof userId !== "string") {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }

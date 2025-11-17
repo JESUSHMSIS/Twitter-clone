@@ -2,7 +2,7 @@ import { serverAuth } from "@/libs/serverAuth";
 import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/libs/prismadb";
 export async function POST(req: NextRequest) {
-  const { currentUser } = await serverAuth(req);
+  const { currentUser } = await serverAuth();
   const { body } = await req.json();
   const post = await prisma.post.create({
     data: {
