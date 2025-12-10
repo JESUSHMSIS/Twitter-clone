@@ -27,11 +27,11 @@ const Form: React.FC<Props> = ({ placeholder, isComment, postId }) => {
       setIsLoading(true);
       await axios.post("/api/posts", { body });
 
-      toast.success("Tweet creado con exito");
+      toast.success("✅ Tweet creado con exito");
       setBody("");
       mutatePost();
     } catch (e) {
-      toast.error("acaba de ocurrir un error");
+      toast.error("💢 acaba de ocurrir un error");
     } finally {
       setIsLoading(false);
     }
